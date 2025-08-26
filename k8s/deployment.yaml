@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  namespace: teamA
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo-app
+          image: princeshawtz/todo-app:IMAGE_TAG 
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: todo-storage
+              mountPath: /data
+      volumes:
+        - name: todo-storage
+          persistentVolumeClaim:
+            claimName: todo-pvc

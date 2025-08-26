@@ -53,7 +53,7 @@ pipeline {
             }
             steps {
                 script {
-                    def imageName = "your-dockerhub-username/todo-app:${env.BUILD_NUMBER}"
+                    def imageName = "princeshawtz/todo-app:${env.BUILD_NUMBER}"
                     sh "docker build -t $imageName ."
                     sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
                     sh "docker push $imageName"

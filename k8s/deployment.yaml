@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-app
-  namespace: teama
+  # namespace: teama
 spec:
   replicas: 2
   selector:

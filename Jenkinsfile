@@ -67,8 +67,19 @@ pipeline {
             }
             steps {
                 input message: 'Approve deployment to AKS?'
-                echo 'Deploying to AKS...'
-                // Placeholder for deployment (will add real script in later step)
+                script {
+                    def imageName = "princeshawtz/todo-app:${env.BUILD_NUMBER}"
+
+                    sh """
+                    kubectl config use-context <your-context-name>
+                    kubectl create namespace teamA --dry-run=client -o yaml | kubectl apply -f -
+                    kubectl apply -f k8s/pvc.yaml
+                    kubectl apply -f k8s/service.yaml
+
+                    # Inject dynamic image tag into deployment
+                    sed 's|IMAGE_TAG|$imageName|' k8s/deployment.yaml | kubectl apply -f -
+                    """
+                }
             }
         }
     }

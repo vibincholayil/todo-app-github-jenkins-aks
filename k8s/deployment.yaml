@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: todo-app
-          image: princeshawtz/todo-app:IMAGE_TAG
+          image: vibincholayil/todo.v1
           ports:
             - containerPort: 3000
           volumeMounts:

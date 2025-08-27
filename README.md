@@ -6,8 +6,6 @@ This project demonstrates a complete DevOps workflow for a Node.js Todo applicat
 ## Architecture Diagram
 ![DevOps Pipeline Architecture](https://github.com/vibincholayil/todo-app-devops/blob/main/ach01.png)
 
-
-
 ## Key Features / Deliverables
 
 ### 1. Source Code Management
@@ -73,6 +71,8 @@ git clone https://github.com/vibincholayil/todo-app-devops.git
 - Push changes to main branch.
 - Approve deployment in Jenkins.
 - Access Todo app in AKS via exposed service.
+![Jenkins Pipeline ](https://github.com/vibincholayil/todo-app-devops/blob/main/SS-pipeline.png)
+
 
 ## Technologies Used
 - Node.js – Backend API

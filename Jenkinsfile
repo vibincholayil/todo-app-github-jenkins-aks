@@ -52,8 +52,8 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     steps {
-                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
+                      withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                        sh '''
                         npx sonar-scanner \
                           -Dsonar.projectKey=todo-app \
                           -Dsonar.sources=. \

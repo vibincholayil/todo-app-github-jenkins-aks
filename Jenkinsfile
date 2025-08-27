@@ -107,23 +107,34 @@ pipeline {
         stage('Deploy to AKS') {
             steps {
                 script {
+                    // Ensure namespace exists
                     sh """
-                        if ! kubectl get pvc todo-pvc -n team-a; then
-                            echo "Creating PVC..."
-                            kubectl apply -f k8s/pvc.yaml  -n team-a
-                        else
-                            echo "PVC already exists."
-                        fi
-                        """
+                    if ! kubectl get namespace team-a > /dev/null 2>&1; then
+                        echo "Creating namespace team-a..."
+                        kubectl create namespace team-a
+                    else
+                        echo "Namespace team-a already exists."
+                    fi
+                    """
+
+                    // Ensure PVC exists
+                    sh """
+                    if ! kubectl get pvc todo-pvc -n team-a; then
+                        echo "Creating PVC..."
+                        kubectl apply -f k8s/pvc.yaml -n team-a
+                    else
+                        echo "PVC already exists."
+                    fi
+                    """
             
-                        // Deploy the app with updated image
-                        sh """
-                        sed 's|IMAGE_TAG|$IMAGE_NAME|' k8s/deployment.yaml | kubectl apply -f -
-                        kubectl apply -f k8s/service.yaml
-                        kubectl get pvc -n team-a
-                        kubectl get pods -n team-a -o wide
-                        kubectl get svc -n team-a -o wide
-                        """
+                    // Deploy the app with updated image
+                    sh """
+                    sed 's|IMAGE_TAG|$IMAGE_NAME|' k8s/deployment.yaml | kubectl apply -f -
+                    kubectl apply -f k8s/service.yaml
+                    kubectl get pvc -n team-a
+                    kubectl get pods -n team-a -o wide
+                    kubectl get svc -n team-a -o wide
+                    """
                 }
             }
         }

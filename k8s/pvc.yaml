@@ -9,4 +9,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  # storageClassName: default # or the name of your Azure Disk SC
+   storageClassName: default # or the name of your Azure Disk SC

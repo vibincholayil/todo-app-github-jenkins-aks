@@ -57,7 +57,7 @@ pipeline {
                            npx sonar-scanner \
                              -Dsonar.projectKey=todo-backend \
                              -Dsonar.sources=. \
-                             -Dsonar.host.url=http://localhost:9000 \
+                             -Dsonar.host.url=http://192.168.152.136:9000 \
                              -Dsonar.login=$SONAR_TOKEN
                         """
                     }

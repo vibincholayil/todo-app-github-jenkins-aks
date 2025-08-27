@@ -51,16 +51,16 @@ pipeline {
         stage('Static Code Analysis') {
             steps {
                 dir('backend') {
-                withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
-                    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                        sh """
-                           npx sonar-scanner \
-                             -Dsonar.projectKey=todo-backend \
-                             -Dsonar.sources=. \
-                             -Dsonar.host.url=http://192.168.152.136:9000 \
-                             -Dsonar.login=$SONAR_TOKEN
-                        """
+                  withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                      npx sonar-scanner \
+                          -Dsonar.projectKey=todo-app \
+                          -Dsonar.sources=. \
+                          -Dsonar.host.url=http://192.168.152.136:9000 \
+                          -Dsonar.login=$SONAR_TOKEN
+                        '''
                     }
+
                     }
                 }
             }

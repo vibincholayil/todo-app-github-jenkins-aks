@@ -126,7 +126,7 @@ pipeline {
             echo 'Pipeline failed!'
         }
     }
-
+}
 }
 
 

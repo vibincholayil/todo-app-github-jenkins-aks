@@ -13,9 +13,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/', (req, res) => {
-  res.send('Welcome to Todo App API! Use /api/todos to access todos.');
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

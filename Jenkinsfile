@@ -158,6 +158,18 @@ pipeline {
         }
     }
 
+        stage('Enable Pod Autoscaling') {
+        steps {
+            script {
+                sh """
+                kubectl apply -f k8s/hpa.yaml -n team-a
+                kubectl get hpa -n team-a
+                """
+            }
+        }
+    }
+
+
     post {
         always {
             echo 'Pipeline execution complete.'

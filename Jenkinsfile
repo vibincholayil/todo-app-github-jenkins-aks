@@ -114,6 +114,13 @@ pipeline {
             }
         }
 
+        stage('Approval') {
+            steps {
+                input message: 'Approve deployment to AKS?', ok: 'Deploy'
+                  }
+                }
+
+
         stage('Deploy to AKS') {
             steps {
                 script {

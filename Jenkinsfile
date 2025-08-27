@@ -54,13 +54,13 @@ pipeline {
                     steps {
                       withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                         sh '''
-                        npx sonar-scanner \
-                          -Dsonar.projectKey=todo-app \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=http://192.168.152.136:9000 \
-                          -Dsonar.login=${SONAR_TOKEN}
-                    '''
-                }
+                            npx sonar-scanner \
+                              -Dsonar.projectKey=todo-app \
+                              -Dsonar.sources=. \
+                              -Dsonar.host.url=http://192.168.152.136:9000 \
+                              -Dsonar.login=${SONAR_TOKEN}
+                          '''
+                   }
                 }
             }
         }
@@ -126,7 +126,7 @@ pipeline {
             echo 'Pipeline failed!'
         }
     }
-}
+
 }
 
 

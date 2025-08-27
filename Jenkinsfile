@@ -51,17 +51,18 @@ pipeline {
         stage('Static Code Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                      withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                        sh '''
+                    withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                        sh """
                             npx sonar-scanner \
                               -Dsonar.projectKey=todo-app \
                               -Dsonar.sources=. \
                               -Dsonar.host.url=http://192.168.152.136:9000 \
-                              -Dsonar.login=${SONAR_TOKEN}
-                          '''
-                   }
+                              -Dsonar.login=\$SONAR_TOKEN
+                        """
+                    }
                 }
             }
+        }
         
 
         stage('Build Docker Image') {
@@ -125,7 +126,6 @@ pipeline {
             echo 'Pipeline failed!'
         }
     }
-}
 }
 
 

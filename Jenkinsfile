@@ -52,20 +52,28 @@ pipeline {
        
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                        sh """
-                            npx sonar-scanner \
-                              -Dsonar.projectKey=todo-app \
-                              -Dsonar.sources=. \
-                              -Dsonar.host.url=http://192.168.152.136:9000 \
-                              -Dsonar.login=\$SONAR_TOKEN
-                        """
+                script {
+                    try {
+                        withSonarQubeEnv('SonarQube') {
+                            withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                                sh """
+                                    npx sonar-scanner \
+                                      -Dsonar.projectKey=todo-app \
+                                      -Dsonar.sources=. \
+                                      -Dsonar.host.url=http://192.168.152.136:9000 \
+                                      -Dsonar.login=\$SONAR_TOKEN
+                                """
+                            }
+                        }
+                        currentBuild.description = "STATIC_ANALYSIS_SUCCESS"
+                    } catch (err) {
+                        currentBuild.description = "STATIC_ANALYSIS_FAILED"
+                        error("Static code analysis failed")
                     }
                 }
             }
         }
-        
+                
 
         stage('Build Docker Image') {
             steps {

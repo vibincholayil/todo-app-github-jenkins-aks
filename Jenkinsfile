@@ -51,7 +51,6 @@ pipeline {
         stage('Static Code Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    steps {
                       withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                         sh '''
                             npx sonar-scanner \
@@ -63,7 +62,7 @@ pipeline {
                    }
                 }
             }
-        }
+        
 
         stage('Build Docker Image') {
             steps {

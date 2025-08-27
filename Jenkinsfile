@@ -50,15 +50,17 @@ pipeline {
        
         stage('Static Code Analysis') {
             steps {
+                dir('backend') {
                 withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
                     withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
                         sh """
                            npx sonar-scanner \
-                             -Dsonar.projectKey=todo-app \
+                             -Dsonar.projectKey=todo-backend \
                              -Dsonar.sources=. \
                              -Dsonar.host.url=http://localhost:9000 \
                              -Dsonar.login=$SONAR_TOKEN
                         """
+                    }
                     }
                 }
             }

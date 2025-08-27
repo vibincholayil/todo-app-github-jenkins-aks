@@ -156,8 +156,6 @@ pipeline {
                 }
             }
         }
-    }
-
         stage('Enable Pod Autoscaling') {
             steps {
                 script {
@@ -168,6 +166,9 @@ pipeline {
                 }
             }
         }
+    }
+
+        
 
 
         post {

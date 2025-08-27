@@ -110,7 +110,7 @@ pipeline {
                     sh """
                         if ! kubectl get pvc todo-pvc -n team-a; then
                             echo "Creating PVC..."
-                            kubectl apply -f k8s/pvc.yaml
+                            kubectl apply -f k8s/pvc.yaml  -n team-a
                         else
                             echo "PVC already exists."
                         fi

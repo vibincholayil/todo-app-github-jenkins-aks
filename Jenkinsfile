@@ -131,6 +131,7 @@ pipeline {
                     sh """
                     sed 's|IMAGE_TAG|$IMAGE_NAME|' k8s/deployment.yaml | kubectl apply -f -
                     kubectl apply -f k8s/service.yaml
+                    kubectl get deployments -n team-a
                     kubectl get pvc -n team-a
                     kubectl get pods -n team-a -o wide
                     kubectl get svc -n team-a -o wide

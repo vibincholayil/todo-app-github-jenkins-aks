@@ -4,19 +4,7 @@
 This project demonstrates a complete DevOps workflow for a Node.js Todo application, from source code management in GitHub to CI/CD with Jenkins, and deployment on Azure Kubernetes Service (AKS). The goal is to implement a modern DevOps pipeline that includes static code analysis, automated Docker builds, approval-based deployment, pod autoscaling, persistent storage, and rollback mechanisms.  
 
 ## Architecture Diagram
-[ GitHub Repo ] 
-      |
-      v
-[ Jenkins CI/CD Pipeline ]
-      |
-      v
-[ Docker Images -> Docker Hub ]
-      |
-      v
-[ Azure Kubernetes Service (AKS) ]
-      |
-      v
-[ Todo App running with HPA and PVC ]
+
 
 ## Key Features / Deliverables
 

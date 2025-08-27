@@ -108,11 +108,22 @@ pipeline {
             steps {
                 script {
                     sh """
+                        if ! kubectl get pvc todo-pvc -n team-a; then
+                            echo "Creating PVC..."
+                            kubectl apply -f k8s/pvc.yaml
+                        else
+                            echo "PVC already exists."
+                        fi
+                        """
+            
+                        // Deploy the app with updated image
+                        sh """
                         sed 's|IMAGE_TAG|$IMAGE_NAME|' k8s/deployment.yaml | kubectl apply -f -
                         kubectl apply -f k8s/service.yaml
-                        kubectl get pods -o wide
-                        kubectl get svc -o wide
-                    """
+                        kubectl get pvc -n team-a
+                        kubectl get pods -n team-a -o wide
+                        kubectl get svc -n team-a -o wide
+                        """
                 }
             }
         }

@@ -175,7 +175,8 @@ pipeline {
             echo 'Pipeline execution complete.'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed! Rolling back deployment...'
+            sh "kubectl rollout undo deployment todo-app -n team-a"
         }
     }
 }

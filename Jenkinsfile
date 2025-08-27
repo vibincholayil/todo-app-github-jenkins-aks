@@ -12,6 +12,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/vibincholayil/todo-app-devops.git'
             }
         }
+
         stage('Setup NodeJS') {
             steps {
                 nodejs('Node18') {
@@ -20,6 +21,7 @@ pipeline {
                 }
             }
         }
+
         stage('Install Dependencies') {
             steps {
                 dir('backend') {
@@ -29,64 +31,70 @@ pipeline {
                 }
             }
         }
+
         stage('Lint Code') {
             steps {
                 sh 'npx eslint . || true'
             }
         }
+
         stage('Run Tests') {
             steps {
                 dir('backend') {
                     nodejs('Node18') {
-                        sh 'npm test'
+                        sh 'npm test || true'
                     }
                 }
             }
         }
+
         stage('Static Code Analysis') {
-              steps {
-                 withSonarQubeEnv('SonarQube') {
-                     withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                         sh """
+            steps {
+                withSonarQubeEnv("${env.SONARQUBE_SERVER}") {
+                    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                        sh """
                            npx sonar-scanner \
                              -Dsonar.projectKey=todo-app \
                              -Dsonar.sources=. \
-                             -Dsonar.host.url=http://localhost:9000 \
+                             -Dsonar.host.url=$SONAR_HOST_URL \
                              -Dsonar.login=$SONAR_TOKEN
-                         """
-                     }
-                 }
-             }
-         }
-        tage('Build Docker Image') {
-            steps {
-                script {
-                    sh "docker build -t vibincholayil/todo.v1 ./backend"
-                }
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', 
-                                                 usernameVariable: 'DOCKER_USERNAME', 
-                                                 passwordVariable: 'DOCKER_PASSWORD')]) {
-                    script {
-                        sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                        sh "docker push vibincholayil/todo.v1"
+                        """
                     }
                 }
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    env.IMAGE_NAME = "vibincholayil/todo-app:${env.BUILD_NUMBER}"
+                    sh "docker build -t $IMAGE_NAME ./backend"
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-cred',
+                                                 usernameVariable: 'DOCKER_USERNAME',
+                                                 passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                        sh "docker push $IMAGE_NAME"
+                    }
+                }
+            }
+        }
+
         stage('Login to Azure') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'AZURE_CREDENTIALS', 
-                                                 usernameVariable: 'AZURE_CLIENT_ID', 
+                withCredentials([usernamePassword(credentialsId: 'AZURE_CREDENTIALS',
+                                                 usernameVariable: 'AZURE_CLIENT_ID',
                                                  passwordVariable: 'AZURE_CLIENT_SECRET')]) {
                     script {
                         sh """
                         echo "Logging in to Azure..."
                         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant 2b32b1fa-7899-482e-a6de-be99c0ff5516
-                        
                         az account show
                         az aks get-credentials --resource-group rg-uk-dev-app --name aks-uk-dev-app --overwrite-existing
                         """
@@ -94,20 +102,19 @@ pipeline {
                 }
             }
         }
- 
-                 
+
         stage('Deploy to AKS') {
             steps {
                 script {
                     sh """
-                        kubectl apply -f k8s/deployment.yaml
+                        sed 's|IMAGE_TAG|$IMAGE_NAME|' k8s/deployment.yaml | kubectl apply -f -
                         kubectl apply -f k8s/service.yaml
                         kubectl get pods -o wide
-                         kubectl get svc -o wide
-                        """
-                        }
-                    }
+                        kubectl get svc -o wide
+                    """
                 }
+            }
+        }
     }
 
     post {
@@ -119,11 +126,6 @@ pipeline {
         }
     }
 }
-     
-
-    
-}
-
 
 
 

@@ -117,10 +117,10 @@ pipeline {
         stage('Approval') {
             steps {
                 input message: 'Approve deployment to AKS?', ok: 'Deploy'
-                  }
-                }
+            }
+        }
 
-
+        
         stage('Deploy to AKS') {
             steps {
                 script {
@@ -156,21 +156,19 @@ pipeline {
                 }
             }
         }
-        stage('Enable Pod Autoscaling') {
-            steps {
-                script {
-                    sh """
-                    kubectl apply -f k8s/hpa.yaml -n team-a
-                    kubectl get hpa -n team-a
-                    """
+            stage('Enable Pod Autoscaling') {
+                steps {
+                    script {
+                        sh """
+                        kubectl apply -f k8s/hpa.yaml -n team-a
+                        kubectl get hpa -n team-a
+                        """
+                    }
                 }
             }
         }
-    }
 
-        
-
-
+    
         post {
             always {
                 echo 'Pipeline execution complete.'
@@ -180,5 +178,5 @@ pipeline {
                 sh "kubectl rollout undo deployment todo-app -n team-a"
             }
         }
-    }
+    } // end of pipeline
 

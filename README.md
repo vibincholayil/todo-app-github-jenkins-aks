@@ -63,11 +63,11 @@ kubectl rollout undo deployment todo-app -n team-a
 
 ## File Structure
 todo-app-devops/
-├── backend/              # Node.js backend code
-├── k8s/                  # Kubernetes manifests (deployment.yaml, service.yaml, pvc.yaml, hpa.yaml)
-├── Jenkinsfile           # CI/CD pipeline configuration
-├── README.md             # Project documentation
-└── package.json
+├── backend/              # Node.js backend code  
+├── k8s/                  # Kubernetes manifests (deployment.yaml, service.yaml, pvc.yaml, hpa.yaml)  
+├── Jenkinsfile           # CI/CD pipeline configuration  
+├── README.md             # Project documentation  
+└── package.json  
 
 ## How I work in this
 

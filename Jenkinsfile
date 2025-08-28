@@ -5,16 +5,19 @@ pipeline {
         NODE_ENV = 'development'
         SONARQUBE_SERVER = 'SonarQube'
     }
-
-    
-    
+    parameters {
+        booleanParam(
+            name: 'ROLLBACK',
+            defaultValue: false,
+            description: 'Set to true to rollback the AKS deployment to the previous version'
+        )
+    }
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/vibincholayil/todo-app-devops.git'
             }
         }
-
         stage('Setup NodeJS') {
             steps {
                 nodejs('Node18') {
@@ -23,7 +26,6 @@ pipeline {
                 }
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 dir('backend') {
@@ -39,7 +41,6 @@ pipeline {
                 sh 'npx eslint . || true'
             }
         }
-
         stage('Run Tests') {
             steps {
                 dir('backend') {
@@ -49,7 +50,6 @@ pipeline {
                 }
             }
         }
-       
         stage('Static Code Analysis') {
             steps {
                 script {
@@ -73,9 +73,20 @@ pipeline {
                 }
             }
         }
-                
-
+        stage('Debug Branch Vars') {
+            steps {
+                script {
+                    echo "🔍 GIT_BRANCH: ${env.GIT_BRANCH}"
+                    echo "🔍 BRANCH_NAME: ${env.BRANCH_NAME}"
+                }
+            }
+        }
         stage('Build Docker Image') {
+            when {
+                expression {
+                    env.GIT_BRANCH == 'origin/main' 
+                }
+            }
             steps {
                 script {
                     env.IMAGE_NAME = "vibincholayil/todo-app:${env.BUILD_NUMBER}"
@@ -83,7 +94,6 @@ pipeline {
                 }
             }
         }
-
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-cred',
@@ -96,7 +106,6 @@ pipeline {
                 }
             }
         }
-
         stage('Login to Azure') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'AZURE_CREDENTIALS',
@@ -115,12 +124,15 @@ pipeline {
         }
 
         stage('Approval') {
+            when {
+                expression {
+                    env.GIT_BRANCH == 'origin/main'
+                }
+            }
             steps {
                 input message: 'Approve deployment to AKS?', ok: 'Deploy'
             }
-        }
-
-        
+        } 
         stage('Deploy to AKS') {
             steps {
                 script {
@@ -167,8 +179,26 @@ pipeline {
                 }
             }
         }
-
-    
+        stage('Rollback Deployment') {
+            when {
+                expression { params.ROLLBACK == true }
+            }
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    script {
+                        echo "⏪ Rolling back deployment to previous revision..."
+                        try {
+                            sh """
+                            kubectl --kubeconfig=$KUBECONFIG rollout undo deployment/todo-app -n team-a
+                            kubectl --kubeconfig=$KUBECONFIG rollout status deployment/todo-app -n team-a
+                            """
+                        } catch (err) {
+                            echo "⚠️ Rollback failed: ${err}"
+                        }
+                    }
+                }
+            }
+        }
         post {
             always {
                 echo 'Pipeline execution complete.'

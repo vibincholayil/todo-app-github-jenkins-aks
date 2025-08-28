@@ -11,7 +11,6 @@ pipeline {
             description: 'Set to true to rollback the AKS deployment to the previous version'
         )
     }
-    
     stages {
         stage('Checkout') {
             steps {
@@ -80,23 +79,21 @@ pipeline {
                 script {
                     echo "🔍 GIT_BRANCH: ${env.GIT_BRANCH}"
                     echo "🔍 BRANCH_NAME: ${env.BRANCH_NAME}"
+                    echo "🔍 CHANGE_ID (PR?): ${env.CHANGE_ID}
                 }
             }
         }
         stage('Build Docker Image') {
-            when {
-                expression {
-                    env.GIT_BRANCH == 'origin/main' 
-                }
-            }
+            when { branch 'main' }
             steps {
                 script {
                     env.IMAGE_NAME = "vibincholayil/todo-app:${env.BUILD_NUMBER}"
                     sh "docker build -t $IMAGE_NAME ./backend"
+                    }
                 }
             }
-        }
         stage('Push Docker Image') {
+            when { branch 'main' }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-cred',
                                                  usernameVariable: 'DOCKER_USERNAME',

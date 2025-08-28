@@ -177,7 +177,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
             stage('Rollback Deployment') {
                 when {
                     expression { params.ROLLBACK == true }
@@ -185,19 +185,20 @@ pipeline {
                 steps {
                     withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                         script {
-                            echo "⏪ Rolling back deployment to previous revision..."
+                            echo " Rolling back deployment to previous revision..."
                             try {
                                 sh """
                                 kubectl --kubeconfig=$KUBECONFIG rollout undo deployment/todo-app -n team-a
                                 kubectl --kubeconfig=$KUBECONFIG rollout status deployment/todo-app -n team-a
                                 """
                             } catch (err) {
-                                echo "⚠️ Rollback failed: ${err}"
+                                echo "Rollback failed: ${err}"
                             }
                         }
                     }
                 }
             }
+        } // stages ends here
         post {
             always {
                 echo 'Pipeline execution complete.'

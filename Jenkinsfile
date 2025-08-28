@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         NODE_ENV = 'development'
         SONARQUBE_SERVER = 'SonarQube'
@@ -179,26 +178,26 @@ pipeline {
                 }
             }
         }
-        stage('Rollback Deployment') {
-            when {
-                expression { params.ROLLBACK == true }
-            }
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    script {
-                        echo "⏪ Rolling back deployment to previous revision..."
-                        try {
-                            sh """
-                            kubectl --kubeconfig=$KUBECONFIG rollout undo deployment/todo-app -n team-a
-                            kubectl --kubeconfig=$KUBECONFIG rollout status deployment/todo-app -n team-a
-                            """
-                        } catch (err) {
-                            echo "⚠️ Rollback failed: ${err}"
+            stage('Rollback Deployment') {
+                when {
+                    expression { params.ROLLBACK == true }
+                }
+                steps {
+                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                        script {
+                            echo "⏪ Rolling back deployment to previous revision..."
+                            try {
+                                sh """
+                                kubectl --kubeconfig=$KUBECONFIG rollout undo deployment/todo-app -n team-a
+                                kubectl --kubeconfig=$KUBECONFIG rollout status deployment/todo-app -n team-a
+                                """
+                            } catch (err) {
+                                echo "⚠️ Rollback failed: ${err}"
+                            }
                         }
                     }
                 }
             }
-        }
         post {
             always {
                 echo 'Pipeline execution complete.'

@@ -11,6 +11,10 @@ pipeline {
             description: 'Set to true to rollback the AKS deployment to the previous version'
         )
     }
+    stage('PR Validation') {
+    when {
+        expression { env.CHANGE_ID != null } // This runs only on PR builds
+    }
     stages {
         stage('Checkout') {
             steps {

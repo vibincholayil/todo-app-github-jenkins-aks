@@ -74,15 +74,15 @@ pipeline {
                 }
             }
         }
-        stage('Debug Branch Vars') {
-            steps {
-                script {
-                    echo "🔍 GIT_BRANCH: ${env.GIT_BRANCH}"
-                    echo "🔍 BRANCH_NAME: ${env.BRANCH_NAME}"
-                    echo "🔍 CHANGE_ID (PR?): ${env.CHANGE_ID}
-                }
-            }
-        }
+        // stage('Debug Branch Vars') {
+        //     steps {
+        //         script {
+        //             echo "🔍 GIT_BRANCH: ${env.GIT_BRANCH}"
+        //             echo "🔍 BRANCH_NAME: ${env.BRANCH_NAME}"
+        //             echo "🔍 CHANGE_ID (PR?): ${env.CHANGE_ID}
+        //         }
+        //     }
+        // }
         stage('Build Docker Image') {
             when { branch 'main' }
             steps {

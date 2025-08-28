@@ -78,6 +78,25 @@ git clone https://github.com/vibincholayil/todo-app-devops.git
 - Persistent Volume Claims (PVC) – Data storage
 - Horizontal Pod Autoscaler (HPA) – Dynamic scaling
 
+## Code to POST in the Todo List
+```
+curl -X POST -H "Content-Type: application/json" \
+-d '{"id":1,"title":"Morning fitness training","completed":false}' \
+http://172.187.119.172/api/todos
+
+curl -X POST -H "Content-Type: application/json" \
+-d '{"id":2,"title":"Net practice: batting","completed":false}' \
+http://172.187.119.172/api/todos
+
+curl -X POST -H "Content-Type: application/json" \
+-d '{"id":3,"title":"Net practice: bowling","completed":false}' \
+http://172.187.119.172/api/todos
+
+curl -X POST -H "Content-Type: application/json" \
+-d '{"id":4,"title":"Net practice: batting","completed":false}' \
+http://172.187.119.172/api/todos
+```
+
 ## Conclusion
 
 This project demonstrates a full end-to-end DevOps workflow for a Node.js Todo application, combining best practices in source code management, CI/CD automation, containerization, and cloud-native deployment on Azure Kubernetes Service (AKS).  By implementing branching strategies, PR validation, conditional pipeline stages, static code analysis, approval-based deployments, pod autoscaling, persistent storage, and deployment rollbacks, this project ensures: High code quality and maintainability, Automated, repeatable, and reliable deployments, Scalable and resilient application infrastructure, Controlled production releases with safety mechanisms  

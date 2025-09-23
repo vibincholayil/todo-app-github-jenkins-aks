@@ -8,6 +8,20 @@ This usecase demonstrates a complete DevOps workflow for a Node.js Todo applicat
 
 ## Key Features / Deliverables
 
+### install jenkins in my Ubuntu VM
+```
+helm repo add jenkins https://charts.jenkins.io  
+helm repo update  
+helm install jenkins jenkins/jenkins --namespace jenkins --create-namespace  
+```
+checking jenkins 
+```
+helm repo list
+```
+Check pods  
+```
+k get pods
+```
 ### 1) Branching and PR Validation
 - Branching:
   - `main`: production-ready

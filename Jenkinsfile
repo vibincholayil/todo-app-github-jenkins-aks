@@ -58,7 +58,7 @@ pipeline {
                 }
             }
         }
-/*
+
         stage('Static Code Analysis') {
             steps {
                 script {
@@ -69,7 +69,7 @@ pipeline {
                                     npx sonar-scanner \
                                       -Dsonar.projectKey=todo-app \
                                       -Dsonar.sources=. \
-                                      -Dsonar.host.url==http://131.145.61.115:9000 \
+                                      -Dsonar.host.url=http://131.145.61.115:9000 \
                                       -Dsonar.login=\$SONAR_TOKEN
                                 """
                             }
@@ -83,7 +83,7 @@ pipeline {
             }
         }
          
-*/
+
         
 
 

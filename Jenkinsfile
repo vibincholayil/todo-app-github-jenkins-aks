@@ -11,6 +11,20 @@ pipeline {
             description: 'Set to true to rollback the AKS deployment to the previous version'
         )
     }
+
+    def buildDockerImage(tag) {
+            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
+                                            usernameVariable: 'DOCKER_USERNAME',
+                                            passwordVariable: 'DOCKER_PASSWORD')]) {
+                sh """
+                    docker build -t todo-app:${tag} .
+                    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+                    docker tag todo-app:${tag} ${DOCKER_USERNAME}/todo-app:${tag}
+                    docker push ${DOCKER_USERNAME} todo-app:${tag}
+                """
+            }
+        }
+
     stages {
         stage('Checkout') {
             steps {
@@ -78,19 +92,19 @@ pipeline {
         }
          */
 
-        def buildDockerImage(tag) {
-            withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
-                                            usernameVariable: 'DOCKER_USERNAME',
-                                            passwordVariable: 'DOCKER_PASSWORD')]) {
-                sh """
-                    docker build -t todo-app:${tag} .
-                    echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-                    docker tag todo-app:${tag} ${DOCKER_USERNAME}/todo-app:${tag}
-                    docker push ${DOCKER_USERNAME} todo-app:${tag}
-                """
-            }
-        }
+        
 
+
+            
+                stage('Build & Push Docker Image') {
+                    steps {
+                        script {
+                            buildDockerImage(env.BUILD_NUMBER)
+                        }
+                    }
+                }
+            
+        
 
 
         /*

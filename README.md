@@ -21,7 +21,13 @@ helm repo list
 Check pods  
 ```
 k get pods
+k get svc
 ```
+
+### Jenkins Setup
+install plugins: nodeJS, 
+#### setup pipeline Team-a
+
 ### 1) Branching and PR Validation
 - Branching:
   - `main`: production-ready

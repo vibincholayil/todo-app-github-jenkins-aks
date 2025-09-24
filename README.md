@@ -56,36 +56,35 @@ az aks get-credentials --resource-group rg-uk-dev-app --name aks-uk-dev-app --ov
 kubectl get nodes
 ```
 ![k8_1](https://github.com/vibincholayil/todo-app-devops/blob/main/images/k8_1.png)
+
 ### Static Code Analysis (SonarQube)
-Install Helm (if not installed)
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+Install Helm  
+```
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash  
+helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube  
+helm repo update  
+helm pull sonarqube/sonarqube --untar  
+```
+Update Chart Values (values.yaml) using (value_1.yaml)  
+service.type → LoadBalancer  
+ingress.enabled → false  
+postgresql.postgresqlPassword → set a secure password  
+Optional: persistence.enabled → false (if persistence not needed)  
+monitoringPasscode  
+community: enabled: true  
 
-Add SonarQube Helm Repository
-helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
-helm repo update
+Deploy SonarQube on AKS  
+```
+helm install sonarqube ./sonarqube --namespace team-a -f ./sonarqube/value_1.yaml
+```
+![sonar_1](https://github.com/vibincholayil/todo-app-devops/blob/main/images/sonar_1.png)
+SonarQube is successfully installed in the team-a namespace on AKS, pods are running, the service has an external IP, and it’s accessible via http://<EXTERNAL-IP>:9000.  
 
-Download and Extract the Helm Chart
-helm pull sonarqube/sonarqube --untar
-
-Update Chart Values (values.yaml)
-
-service.type → LoadBalancer
-
-ingress.enabled → false
-
-postgresql.postgresqlPassword → set a secure password
-
-Optional: persistence.enabled → false (if persistence not needed)
-
-Deploy SonarQube on AKS
-helm install sonarqube ./sonarqube
-
-
-Verify Deployment:
-
-kubectl get pods
-kubectl get svc
-
+Verify Deployment:  
+```
+kubectl get pods  
+kubectl get svc  
+```
 
 #### Login to Azure
 

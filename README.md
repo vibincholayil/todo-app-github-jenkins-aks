@@ -26,23 +26,155 @@ k get svc
 
 ### Jenkins Setup
 install plugins: nodeJS, 
-#### setup pipeline Team-a
 
-### 1) Branching and PR Validation
+
+### setup pipeline Team-a
+
+### Branching and PR Validation
 - Branching:
   - `main`: production-ready
 - PR validation:
   - Linting and unit tests must pass
   - Code review before merge
 
-### 2) Conditional Pipeline Stages
-- Stages run based on environment:
-  - **Static code analysis** blocks the pipeline if code quality fails.
-  - **Approval stage** before deploying to AKS.
-  - Fail-fast logic halts downstream stages on error
+### install Azure CLI
+```
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash  
+az version
+```
 
-### 3) Static Code Analysis
-- SonarQube integrated for quality gates
+### Install kubectl
+```
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+kubectl version --client
+```
+### Login to Azure Using Service Principal
+```
+Replace <APP_ID>, <PASSWORD>, <TENANT_ID> with credentials provided by your administrator:  
+
+az login --service-principal \
+  --username <APP_ID> \
+  --password <PASSWORD> \
+  --tenant <TENANT_ID>
+  
+
+az account show
+```
+
+### Connect to AKS Cluster
+```
+az aks get-credentials --resource-group rg-uk-dev-app --name aks-uk-dev-app --overwrite-existing
+kubectl get nodes
+```
+### Static Code Analysis (SonarQube)
+Install Helm (if not installed)
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+Add SonarQube Helm Repository
+helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+helm repo update
+
+Download and Extract the Helm Chart
+helm pull sonarqube/sonarqube --untar
+
+Update Chart Values (values.yaml)
+
+service.type → LoadBalancer
+
+ingress.enabled → false
+
+postgresql.postgresqlPassword → set a secure password
+
+Optional: persistence.enabled → false (if persistence not needed)
+
+Deploy SonarQube on AKS
+helm install sonarqube ./sonarqube
+
+
+Verify Deployment:
+
+kubectl get pods
+kubectl get svc
+
+
+#### Login to Azure
+
+```bash
+az login
+```
+
+
+### Get AKS Cluster Credentials
+
+To connect to your hosted AKS cluster, use the following command:
+
+```bash
+az aks get-credentials --resource-group rg-uk-dev-app --name aks-uk-dev-app --overwrite-existing
+```
+
+
+### Verify `kubectl` Connection
+
+```bash
+kubectl get nodes
+```
+
+
+
+
+### Helm is required to deploy SonarQube in Kubernetes.
+
+```bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+helm repo update
+helm pull sonarqube/sonarqube --untar
+```
+This creates a folder with the default SonarQube chart.
+
+#### Update Chart Values
+Edit the `values.yaml` file to customize your deployment:
+* Set `service.type` to `LoadBalancer` (because AKS requires LB for external access).
+* Disable Ingress: `ingress.enabled: false`
+* Set `postgresql.postgresqlPassword` (enable a secure passcode).
+* Optional: Set `persistence.enabled: false` if persistent storage is not required.
+
+#### Deploy SonarQube on AKS
+```bash
+helm install sonarqube ./sonarqube
+```
+This will deploy SonarQube in your AKS cluster.
+
+#### Verify SonarQube Deployment
+```bash
+kubectl get pods
+kubectl get svc
+```
+#### Check that the SonarQube pod is running and the service is exposed via a LoadBalancer.
+
+
+### Azure Portal Verification
+
+1. Login to [Azure Portal](https://portal.azure.com/).
+2. Navigate to your AKS cluster: **Resource Group → AKS Cluster**.
+3. Check:
+   * Nodes are healthy
+   * Services are running (including SonarQube)
+   * External IP assigned for LoadBalancer (if applicable)
+
+
+* Connect your **CI/CD pipeline** (e.g., Jenkins) with SonarQube for **Static Code Analysis** and **Quality Gate checks**.
+* Ensure SonarQube token and project keys are properly configured in your pipeline.
+
+
+
+
+
 - Pipeline **fails** if critical vulnerabilities, bugs, or coverage thresholds are not met
 
 ### 4) Approval-Based Deployments

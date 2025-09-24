@@ -82,6 +82,7 @@ pipeline {
             
             steps {
                 script {
+                    env.PATH="/usr/bin:${env.PATH}"
                     env.IMAGE_NAME = "vibincholayil/todo-app:${env.BUILD_NUMBER}"
                     sh "docker build -t $IMAGE_NAME ./backend"
                     }

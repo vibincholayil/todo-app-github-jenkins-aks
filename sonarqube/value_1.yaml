@@ -1,4 +1,4 @@
-# values_1.yaml - Minimal SonarQube values for AKS
+# values_1.yaml - Minimal SonarQube values for AKS (Community Edition)
 
 service:
   type: LoadBalancer
@@ -20,3 +20,5 @@ persistence:
 
 monitoringPasscode: "YourStrongPasscode123!"
 
+community:
+  enabled: true   # Enable Community Edition

@@ -83,26 +83,25 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    env.PATH = "/usr/bin:${env.PATH}"
-                    env.IMAGE_NAME = "${DOCKER_USERNAME}/todo-app:${BUILD_NUMBER}"
-                    sh "docker build -t $IMAGE_NAME ./backend"
+                    env.IMAGE_NAME = "vibincholayil/todo-app:${env.BUILD_NUMBER}"
+                    sh "/usr/bin/docker build -t $IMAGE_NAME ./backend"
                 }
             }
         }
+       
 
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials',
                                                 usernameVariable: 'DOCKER_USERNAME',
                                                 passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh """
-                        echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-                        docker push $IMAGE_NAME
-                    """
+                    script {
+                        sh "echo ${DOCKER_PASSWORD} | /usr/bin/docker login -u ${DOCKER_USERNAME} --password-stdin"
+                        sh "/usr/bin/docker push $IMAGE_NAME"
+                    }
                 }
             }
         }
-
 
         
         stage('Login to Azure') {

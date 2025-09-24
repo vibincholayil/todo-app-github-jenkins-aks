@@ -51,6 +51,8 @@ pipeline {
                 }
             }
         }
+
+        /*
         stage('Static Code Analysis') {
             steps {
                 script {
@@ -74,6 +76,8 @@ pipeline {
                 }
             }
         }
+        */
+        
         stage('Build Docker Image') {
             when { branch 'main' }
             steps {

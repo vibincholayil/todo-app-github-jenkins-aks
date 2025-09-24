@@ -79,7 +79,7 @@ pipeline {
         */
 
         stage('Build Docker Image') {
-            when { branch 'main' }
+            
             steps {
                 script {
                     env.IMAGE_NAME = "vibincholayil/todo-app:${env.BUILD_NUMBER}"
@@ -88,7 +88,7 @@ pipeline {
                 }
             }
         stage('Push Docker Image') {
-            when { branch 'main' }
+            
             steps {
                 withCredentials([usernamePassword(
                 credentialsId: 'dockerhub-credentials',

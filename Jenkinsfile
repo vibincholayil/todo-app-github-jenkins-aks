@@ -36,13 +36,13 @@ pipeline {
         }
 
         stage('Lint Code') {
-            // when { expression { env.CHANGE_ID != null } } // PR build
+            when { expression { env.CHANGE_ID != null } } // PR build
             steps {
                 sh 'npx eslint . || true'
             }
         }
         stage('Run Tests') {
-            // when { expression { env.CHANGE_ID != null } } // PR build
+            when { expression { env.CHANGE_ID != null } } // PR build
             steps {
                 dir('backend') {
                     nodejs('Node18') {
@@ -97,7 +97,7 @@ pipeline {
                                                 usernameVariable: 'DOCKER_USERNAME',
                                                 passwordVariable: 'DOCKER_PASSWORD')]) {
                     script {
-                        sh "echo $DOCKER_PASSWORD | /usr/bin/docker login -u $DOCKER_USERNAME --password-stdin"
+                        sh "echo ${DOCKER_PASSWORD} | /usr/bin/docker login -u ${DOCKER_USERNAME} --password-stdin"
                         sh "/usr/bin/docker push $IMAGE_NAME"
                     }
                 }

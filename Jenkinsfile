@@ -78,19 +78,7 @@ pipeline {
         }
         */
 
-        stage('Check Docker') {
-            steps {
-                script {
-                    sh '''
-                        echo "PATH=$PATH"
-                        which docker
-                        docker --version
-                    '''
-                }
-            }
-        }
         stage('Build Docker Image') {
-            
             steps {
                 script {
                     env.PATH="/usr/bin:${env.PATH}"

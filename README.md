@@ -27,22 +27,14 @@ k get svc
 ### Jenkins Setup
 install plugins: nodeJS, 
 
-
 ### setup pipeline Team-a
 
-### Branching and PR Validation
-- Branching:
-  - `main`: production-ready
-- PR validation:
-  - Linting and unit tests must pass
-  - Code review before merge
 
 ### install Azure CLI
 ```
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash  
 az version
 ```
-
 ### Install kubectl
 ```
 sudo apt-get update
@@ -55,22 +47,15 @@ kubectl version --client
 ```
 ### Login to Azure Using Service Principal
 ```
-Replace <APP_ID>, <PASSWORD>, <TENANT_ID> with credentials provided by your administrator:  
-
-az login --service-principal \
-  --username <APP_ID> \
-  --password <PASSWORD> \
-  --tenant <TENANT_ID>
-  
-
+az login --service-principal --username <APP_ID> --password <PASSWORD> --tenant <TENANT_ID>  
 az account show
 ```
-
 ### Connect to AKS Cluster
 ```
 az aks get-credentials --resource-group rg-uk-dev-app --name aks-uk-dev-app --overwrite-existing
 kubectl get nodes
 ```
+![k8_1](https://github.com/vibincholayil/todo-app-devops/blob/main/images/k8_1.png)
 ### Static Code Analysis (SonarQube)
 Install Helm (if not installed)
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash

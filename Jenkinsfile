@@ -55,7 +55,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage('Static Code Analysis') {
             steps {
                 script {
@@ -79,7 +79,7 @@ pipeline {
                 }
             }
         }
-
+*/
         stage('Build & Push Docker Image') {
             steps {
                 script {

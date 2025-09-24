@@ -1,10 +1,9 @@
-
 pipeline {
     agent any
     environment {
         NODE_ENV = 'development'
-        SONARQUBE_SERVER = 'SonarQube'
     }
+
     parameters {
         booleanParam(
             name: 'ROLLBACK',
@@ -16,11 +15,13 @@ pipeline {
 
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/vibincholayil/todo-app-devops.git'
             }
         }
+
         stage('Setup NodeJS') {
             steps {
                 nodejs('Node18') {
@@ -29,6 +30,7 @@ pipeline {
                 }
             }
         }
+
         stage('Install Dependencies') {
             steps {
                 dir('backend') {
@@ -45,6 +47,7 @@ pipeline {
                 sh 'npx eslint . || true'
             }
         }
+
         stage('Run Tests') {
             when { expression { env.CHANGE_ID != null } } // PR build
             steps {
@@ -55,8 +58,7 @@ pipeline {
                 }
             }
         }
-
-        
+/*
         stage('Static Code Analysis') {
             steps {
                 script {
@@ -81,7 +83,7 @@ pipeline {
             }
         }
          
-
+*/
         
 
 

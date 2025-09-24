@@ -1,4 +1,4 @@
-# values_1.yaml - Minimal SonarQube values for AKS (Community Edition)
+# values_1.yaml - Minimal SonarQube values for AKS (Community Edition, learning purpose)
 
 service:
   type: LoadBalancer
@@ -13,6 +13,15 @@ postgresql:
   persistence:
     enabled: true
     size: 8Gi
+
+resources:
+  sonar:
+    requests:
+      cpu: 200m
+      memory: 1Gi
+    limits:
+      cpu: 400m
+      memory: 2Gi
 
 persistence:
   enabled: true

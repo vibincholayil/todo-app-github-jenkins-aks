@@ -1,41 +1,22 @@
-# values_1.yaml - Custom values for SonarQube on AKS
+# values_1.yaml - Minimal SonarQube values for AKS
 
 service:
-  type: LoadBalancer   # Expose SonarQube externally via a LoadBalancer
+  type: LoadBalancer
   port: 9000
 
 ingress:
-  enabled: false       # Disable Ingress, using LoadBalancer instead
+  enabled: false
 
 postgresql:
   postgresqlUsername: sonarqube
-  postgresqlPassword: "YourSecurePassword123!"  # Change to a strong password
+  postgresqlPassword: "YourSecurePassword123!"
   persistence:
     enabled: true
     size: 8Gi
-    storageClass: default
 
 persistence:
-  enabled: true         # Persist SonarQube data
+  enabled: true
   size: 10Gi
-  storageClass: default
 
-sonarProperties:
-  sonar.web.context: /
-  sonar.web.javaOpts: "-Xmx512m -Xms128m"
+monitoringPasscode: "YourStrongPasscode123!"
 
-resources:
-  sonar:
-    limits:
-      cpu: 1000m
-      memory: 2Gi
-    requests:
-      cpu: 500m
-      memory: 1Gi
-  postgresql:
-    limits:
-      cpu: 500m
-      memory: 1Gi
-    requests:
-      cpu: 250m
-      memory: 512Mi

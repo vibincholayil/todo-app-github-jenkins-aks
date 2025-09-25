@@ -125,6 +125,9 @@ kubectl get svc
 ![sonar_1](https://github.com/vibincholayil/todo-app-devops/blob/main/images/sonar_1.png)
 SonarQube is successfully installed in the team-a namespace on AKS, pods are running, the service has an external IP, and it’s accessible via http://<EXTERNAL-IP>:9000.  
 
+#### Containerization (Docker)
+![dockerhub](https://github.com/vibincholayil/todo-app-devops/blob/main/images/dockerhub.png)
+
 #### Login to Azure
 ```bash
 az login
